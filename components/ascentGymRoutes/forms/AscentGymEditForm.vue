@@ -37,7 +37,7 @@
       <!-- Grade if grade system -->
       <v-text-field
         v-if="!data.color_system_line_id"
-        v-model="data.sections[0].grade"
+        v-model="data.grade"
         outlined
         type="text"
         :label="$t('models.ascentGymRoute.grade')"
@@ -118,7 +118,7 @@ export default {
         ascent_status: this.ascentGymRoute?.ascent_status,
         released_at: this.ascentGymRoute?.released_at || this.ISODateToday(),
         color_system_line_id: this.ascentGymRoute?.color_system_line?.id,
-        sections: this.ascentGymRoute?.sections,
+        grade: this.ascentGymRoute?.max_grade_text || this.ascentGymRoute?.sections?.[0]?.grade,
         quantity: this.ascentGymRoute?.quantity,
         climbing_type: this.ascentGymRoute?.climbing_type,
         height: this.ascentGymRoute?.height
@@ -131,9 +131,21 @@ export default {
   methods: {
     submit () {
       this.submitOverlay = true
+      const payload = {
+        id: this.data.id,
+        ascent_status: this.data.ascent_status,
+        released_at: this.data.released_at,
+        color_system_line_id: this.data.color_system_line_id,
+        quantity: this.data.quantity,
+        climbing_type: this.data.climbing_type,
+        height: this.data.height
+      }
+      if (!payload.color_system_line_id) {
+        payload.grade = this.data.grade
+      }
 
       new AscentGymRouteApi(this.$axios, this.$auth)
-        .update(this.data)
+        .update(payload)
         .then(() => {
           this.$auth.fetchUser().then(() => {
             if (this.callback) {

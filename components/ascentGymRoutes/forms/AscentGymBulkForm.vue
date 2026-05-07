@@ -96,11 +96,16 @@
             </p>
           </div>
         </v-col>
-        <v-col
-          cols="2"
-          class="pl-0 pt-5 text-center"
-        >
-          <ascent-status-icon-input v-model="ascent.ascent_status" />
+        <v-col cols="4">
+          <v-select
+            v-model="ascent.ascent_status"
+            outlined
+            hide-details
+            :items="ascentStatusItems"
+            item-text="text"
+            item-value="value"
+            :label="$t('components.input.ascentStatus')"
+          />
         </v-col>
       </v-row>
     </v-sheet>
@@ -219,7 +224,6 @@
 
 <script>
 import { mdiCalendar, mdiMinus, mdiPlus } from '@mdi/js'
-import AscentStatusIconInput from '~/components/forms/AscentStatusIconInput.vue'
 import DatePickerInput from '~/components/forms/DatePickerInput.vue'
 import AscentGymRouteApi from '~/services/oblyk-api/AscentGymRouteApi'
 import ColorSystemInput from '~/components/forms/ColorSystemInput.vue'
@@ -231,7 +235,6 @@ export default {
   components: {
     ColorSystemLineInput,
     ColorSystemInput,
-    AscentStatusIconInput,
     DatePickerInput
   },
   mixins: [DateHelpers],
@@ -279,6 +282,17 @@ export default {
   computed: {
     haveSpaces () {
       return this.gym.gym_spaces.length > 0
+    },
+
+    ascentStatusItems () {
+      return [
+        { text: this.$t('models.ascentStatus.project'), value: 'project' },
+        { text: this.$t('models.ascentStatus.sent'), value: 'sent' },
+        { text: this.$t('models.ascentStatus.red_point'), value: 'red_point' },
+        { text: this.$t('models.ascentStatus.flash'), value: 'flash' },
+        { text: this.$t('models.ascentStatus.onsight'), value: 'onsight' },
+        { text: this.$t('models.ascentStatus.repetition'), value: 'repetition' }
+      ]
     }
   },
 
